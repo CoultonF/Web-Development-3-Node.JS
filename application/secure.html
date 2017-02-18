@@ -1,0 +1,68 @@
+
+<html>
+<head>
+    <title>Assignment 1</title>
+    <script src="../lib/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="../lib/semantic/dist/semantic.min.css">
+    <script src="../lib/semantic/dist/semantic.min.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.min.css">
+
+    <script>
+    $(document).ready(function(){
+
+
+    });
+    </script>
+
+</head>
+
+<body>
+    <div class="ui one column center aligned grid">
+        <div class="column seven wide admin-menu form-holder">
+            <div class="ui container">
+                <br>
+                <div class="ui secondary menu">
+                    <div class="header item">User Menu</div>
+                    <a class="active item">
+                        Add User
+                    </a>
+                    <div class="right menu">
+
+                        <a class="ui item " href="/">
+                            Logout
+                        </a>
+                    </div>
+                </div>
+                <div class="ui divider"></div>
+                <br>
+                <div class="ui grid">
+                    <div class="four wide column">
+                        <div class="ui secondary vertical pointing fluid menu">
+                            <a class="item active">
+                                Create User
+                            </a>
+                        </div>
+                    </div>
+                    <div class="twelve wide column">
+                        <form class="ui form" method='post' action="/secure/add-user">
+                            <div class="field">
+                                <input type="text" name="username" placeholder="Username">
+                            </div>
+                            <div class="field">
+                                <input type="text" name="password" placeholder="Password">
+                            </div>
+                            <button class="ui positive button column right floated">
+                                <i class="plus icon"></i>Add User
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+        </div>
+    </div>
+</body>
+
+</html>

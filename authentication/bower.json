@@ -1,0 +1,21 @@
+{
+  "name": "assignment_1",
+  "description": "Assignment by Coulton Fraser for Web 3",
+  "main": "app.js",
+  "authors": [
+    "Coulton Fraser"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "semantic": "^2.2.7",
+    "font-awesome": "^4.7.0"
+  }
+}

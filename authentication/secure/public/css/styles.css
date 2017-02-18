@@ -1,0 +1,39 @@
+body, body.pushable > .pusher {
+   background: url('../assets/login-bg.jpeg') fixed;
+   background-size: cover;
+   padding: 0;
+   margin: 0;
+ }
+
+ .form-holder {
+   background: rgba(255,255,255,1);
+   margin-top: 10%;
+   border-radius: 3px;
+ }
+
+
+ .admin-padding{
+     margin-top: 5% !important;
+ }
+.hide{
+    display: none;
+}
+ .admin-menu{
+     background: rgba(255,255,255,1);
+ }
+
+ .form-head {
+   font-size: 30px;
+   letter-spacing: 2px;
+   text-transform: uppercase;
+   color: #666;
+   /*text-shadow: 0 0 30px #000;
+   margin: 15px auto 30px auto;*/
+ }
+
+ .remember-me {
+   text-align: left;
+ }
+ .ui.checkbox label {
+   color: #ddd;
+ }
