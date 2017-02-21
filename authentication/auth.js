@@ -1,7 +1,5 @@
 var express = require('express'),
 
-auth = require('express-jwt-token'),
-
 nJwt = require('njwt'),
 
 bodyParser = require('body-parser'),
@@ -51,11 +49,47 @@ app.use(bodyParser.urlencoded({extended:false}));
 
 //DEFAULT ROUTE OF '/'
 
+app.use('/secure*', function(req, res, next){
+
+    var authToken;
+
+    if(customAuth.getToken()){
+
+        authToken = customAuth.getToken();
+
+    }
+
+    if(authToken)
+
+    {
+
+        customAuth.verifyToken(req, res, authToken, 'admin', __dirname + '/secure.html', '/error');
+
+        authToken = "";
+
+    }
+
+    else
+
+    {
+
+        return next();
+
+    }
+
+});
+
 app.get('/', function(req, res){
 
-    console.log('ROOT: '+token);
+//IF IS VALID AUTH TOKEN DONT MAKE THE USER LOGIN AGAIN, JUST SEND TO /SECURE
 
-    res.sendFile(__dirname + '/index.html');
+    if(customAuth.getToken())
+
+        res.redirect('/secure');
+
+    else
+
+        res.sendFile(__dirname + '/index.html');
 
 });
 
@@ -65,7 +99,7 @@ secureRouter.route('/').get(function(req, res, next){
 
     {
 
-        customAuth.verifyToken(req, res, token, 'application1', __dirname + '/secure.html', '/error');
+        customAuth.verifyToken(req, res, token, 'admin', __dirname + '/secure.html', '/error');
 
     }
 
@@ -73,7 +107,33 @@ secureRouter.route('/').get(function(req, res, next){
 
     {
 
-        //next();
+        next();
+
+    }
+
+});
+
+secureRouter.route('/').post(function(req,res){
+
+    if(token)
+
+    {
+        console.log('SECURE VERIFY TOKEN');
+        customAuth.verifyToken(req, res, token, 'admin', __dirname + '/secure.html', '/error');
+
+    }
+
+    else
+
+    {
+
+        customAuth.resetToken();
+
+        token = customAuth.authorize(req, res, req.body.username, req.body.password, 'admin', __dirname + '/secure.html', '/error');
+
+        token = customAuth.getToken();
+        console.log('username: ' + customAuth.encrypt(req.body.username));
+        console.log('RETURN VALUE: '+ token);
 
     }
 
@@ -81,22 +141,53 @@ secureRouter.route('/').get(function(req, res, next){
 
 errorRouter.route('/').get(function(req, res){
 
-    res.sendFile(__dirname + '/error.html');
+    if(customAuth.getToken()){
+
+        customAuth.resetToken();
+
+        res.redirect('/');
+
+    }
+
+    else
+
+    {
+
+        res.sendFile(__dirname + '/error.html');
+
+    }
 
 });
 
+addUserRouter.route('/').post(function(req, res){
 
+    credentials.admin.users.push({'username':bcrypt.customAuth.encrypt(req.body.username),'password':bcrypt.hashSync(req.body.password, saltRounds)});
 
+    //STRINGIFY PARAM: 4 – MEANS INDENT 4 SPACES TO ENSURE READABILITY
+
+    var data = JSON.stringify(credentials, null, 4);
+
+    fs.writeFile(__dirname + '/info.json', data, 'utf-8', function(err){
+
+        if (err)
+
+            return console.log(err);
+
+        res.redirect('/secure');
+
+    });
+
+});
 
 //loginRouter USED FOR ADMIN LOGIN THROUGH THE '/' ROUTE
 
 loginRouter.route('/').post(function(req, res, next){
 
-    console.log('LOGIN ROUTER');
-
     var username = req.headers.username;
 
     var password = req.headers.password;
+
+    console.log(customAuth.encrypt(username));
 
     //IF LOGGING IN THROUGH THE AUTH SERVER IT CAN BE ASSUMED THAT THE USER IS ADMIN
 
@@ -105,8 +196,6 @@ loginRouter.route('/').post(function(req, res, next){
     var jwt = '';
 
     //RE-READ THE INFO.JSON FILE TO ENSURE THE LATEST LOGIN CREDENTIALS ARE BEING USED
-
-
 
     fs.readFile(__dirname + '/info.json', function(err, data){
 
@@ -125,11 +214,14 @@ loginRouter.route('/').post(function(req, res, next){
         credentials = JSON.parse(data);
 
         //ASSIGN THE SECRET KEY TO
+
         var secretKey = credentials[permission].tokenSecret;
 
-        for(var i = 0; i < credentials[permission].users.length; i++){
 
-            if(bcrypt.compareSync(password, credentials[permission].users[i].password) && bcrypt.compareSync( username, credentials[permission].users[i].username))
+
+        for(var i = 0; i < credentials[permission].users.length; i++){
+            console.log('FLAG HERE: '+username);
+            if(bcrypt.compareSync(password, credentials[permission].users[i].password) && username == customAuth.decrypt(credentials[permission].users[i].username))
 
             {
 
@@ -158,13 +250,12 @@ loginRouter.route('/').post(function(req, res, next){
 
         if(jwt)
 
-        res.status(200).send(jwt);
+            res.status(200).send(jwt);
 
         else
-        {
 
-        res.status(401).send('/error.html');
-    }
+            res.status(401).send('/error.html');
+
     });
 
 });
@@ -179,25 +270,22 @@ loginRouter.route('/').post(function(req, res, next){
 verifyRouter.route('/').post(function(req, res, next){
 
     //re-read info.json as file structure may have been modified
-    console.log('VERIFY L1');
+
     fs.readFile(__dirname + '/info.json', function(err, data){
 
-        if(err){
+        if(err)
+
+        {
 
             res.send('No authentication data found.');
 
             console.log(err);
 
-            next();
-
         }
 
         credentials = JSON.parse(data);
-        console.log('VERIFY L2');
+
     });
-
-
-    console.log('VERIFY L3');
 
     var authtoken = req.headers.token;
 
@@ -205,78 +293,27 @@ verifyRouter.route('/').post(function(req, res, next){
 
     nJwt.verify(authtoken, secretKey,function(err,verifiedJwt){
 
-        console.log('VERIFY L5');
-
-        //var tempJSON = JSON.parse(verifiedJwt);
-
-        console.log(verifiedJwt);
-
-        //console.log(verifiedJwt.body.iss + ' | '+  req.headers.permission);
-
         if (err)
 
-        return res.status(401).send('');
+            return res.status(401).send('');
 
         else if(verifiedJwt.body.iss == req.headers.permission)
-        {
 
-            console.log('Token Claims: '+JSON.stringify(verifiedJwt) +'\n');
-            //res.end();
             return res.status(200).send('200 – OK.');
 
-        }
     });
-    console.log('VERIFY L5');
-});
-
-
-
-
-//secureRouter USED TO MANAGE THE SECURE PAGE ROUTE AND LOG THE ADMIN IN
-
-secureRouter.route('/').post(function(req,res){
-
-    if(token)
-
-    {
-
-        customAuth.verifyToken(req, res, token, 'admin', __dirname + '/secure.html', '/error');
-
-    }
-
-    else
-
-    {
-
-        customAuth.resetToken();
-
-        customAuth.authorize(req, res, req.body.username, req.body.password, 'admin', __dirname + '/secure.html', '/error');
-
-        token = customAuth.getToken();
-
-        console.log('RETURN VALUE: '+ token);
-
-    }
 
 });
+
+
 
 
 
 addUserRouter.route('/').post(function(req, res){
 
-
     res.send('/secure');
 
 });
-
-function saveUsertoJson(username, password, app){
-
-    var obj = JSON.parse(fs.readFileSync('file', 'utf8'));
-
-    credentials[app].users.push({'username':bcrypt.hashSync(username, saltRounds),'password':bcrypt.hashSync(password, saltRounds)});
-
-
-}
 
 
 
@@ -299,21 +336,11 @@ logoutRouter.route('/').get(function(req, res){
 
 tokenRouter.route('/').post(function(req, res){
 
-    console.log('TOKEN ROUTE: '+req.headers.permission);
-
     var tokenSecret = crypto.randomBytes(64).toString('hex');
 
     var infoJSON;
 
     infoJSON = JSON.parse(fs.readFileSync(__dirname + '/info.json', 'utf8'));
-
-
-
-    console.log(infoJSON);
-
-    console.log('TOKEN: '+tokenSecret);
-
-    console.log();
 
     infoJSON[req.headers.permission].tokenSecret = tokenSecret;
 
@@ -323,44 +350,18 @@ tokenRouter.route('/').post(function(req, res){
 
         if (err)
 
-        return console.log(err);
-
-        //console.log(data);
+            return console.log(err);
 
         res.redirect('/secure');
 
     });
-res.send('done.');
-});
-
-
-
-
-app.use('/secure*', function(req, res, next){
-    console.log('SECURE* L1 ');
-
-    var authToken;
-
-    if(customAuth.getToken()){
-
-        authToken = customAuth.getToken();
-        console.log('GET TOKEN: '+authToken);
-
-    }
-
-    console.log('SECURE*: '+authToken);
-    if(authToken)
-    {
-
-        console.log('TOKEN TOKEN');
-        customAuth.verifyToken(req, res, authToken, 'application1', __dirname + '/secure.html', '/error');
-        authToken = "";
-    }else {
-
-        return next();
-    }
 
 });
+
+
+
+
+
 
 
 
@@ -383,20 +384,15 @@ app.use('/token', tokenRouter);
 
 app.listen(port, function(err){
 
-    if(err){
+    if(err)
 
         console.log('Error: ' + err);
 
-    }
-
     else
 
-    console.log('Server started at localhost: ' + port);
-
-    console.log(customAuth.getToken());
+        console.log('Server started at localhost: ' + port);
 
 });
-
 
 
 

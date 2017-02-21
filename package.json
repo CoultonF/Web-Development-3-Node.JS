@@ -1,0 +1,22 @@
+{
+  "name": "assignment_1",
+  "version": "1.0.0",
+  "description": "Assignment by Coulton Fraser for Web 3",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Coulton Fraser",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^1.0.2",
+    "crypto": "0.0.3",
+    "express": "^4.14.1",
+    "body-parser": "^1.6.1",
+    "express-handlebars":"^1.*",
+    "njwt":"^0.4.0",
+    "json-server":"^0.9.5"
+  },
+  "devDependencies": {}
+}

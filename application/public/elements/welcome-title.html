@@ -1,0 +1,31 @@
+<dom-module id="welcome-title">
+    <template id="">
+        <p>Welcome, </p><span>{{username}}</span>
+    </template>
+    <iron-ajax id="getUsername" url="http://localhost:3000/secure/username" method="GET" handle-as="json" on-response="getUsernameCB" with-credentials='true'></iron-ajax>
+</dom-module>
+<script>
+    Polymer({
+
+        is: "welcome-title",
+
+        properties: {
+
+
+
+        },
+
+        ready: function(){
+
+            this.$.getUsername.generateRequest();
+
+        },
+
+        getUsernameCB: function(res){
+
+            this.username = res.detail.response
+
+        }
+
+    })
+</script>

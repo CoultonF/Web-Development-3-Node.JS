@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.min.css">
 
+    <script src="lib/webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="../lib/polymer/polymer.html">
+    <link rel="import" href="../elements/welcome-title.html">
+
     <script>
     $(document).ready(function(){
 
@@ -21,6 +25,7 @@
     <div class="ui one column center aligned grid">
         <div class="column seven wide admin-menu form-holder">
             <div class="ui container">
+                <welcome-title></welcome-title>
                 <br>
                 <div class="ui secondary menu">
                     <div class="header item">User Menu</div>

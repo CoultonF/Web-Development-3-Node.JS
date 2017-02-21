@@ -2,7 +2,7 @@
     "admin": {
         "users": [
             {
-                "username": "$2a$10$sHfK4S9z8r5p3ZkLZ9AQWusCsc9C2yFRDNkL09LqyZgRgXUKBtVMu",
+                "username": "058ad9992f",
                 "password": "$2a$10$fDbYQ7vEeOMvJDMp9XFUM.EzEEogUhdOqoFS3P7bLA8NY2vQj2d2a"
             }
         ],
@@ -11,18 +11,34 @@
     "application1": {
         "users": [
             {
-                "username": "$2a$10$sHfK4S9z8r5p3ZkLZ9AQWusCsc9C2yFRDNkL09LqyZgRgXUKBtVMu",
+                "username": "058ad9992f",
                 "password": "$2a$10$fDbYQ7vEeOMvJDMp9XFUM.EzEEogUhdOqoFS3P7bLA8NY2vQj2d2a"
             },
             {
-                "username": "$2a$10$ADCkw3gsM.tkgwwOGdmh6.A/aN6JNlRWEyF1gVyD2d4Wgs5OeqjX.",
-                "password": "$2a$10$zqwV/cFAKDNLIoUmPpAGo.KsRhuD52iJ/8rSzwaF.xgr0ZMCL64U6"
+                "username": "119dd182",
+                "password": "$2a$10$twFH2o/voEo8eY0/tW8qx.fSXqr8ONF1Lh/IIQttVnb661LNJdRqu"
             },
             {
-                "username": "$2a$10$8kVYpmApCdKXytPx6ROBWuQ53IJB42cVt.6TPoIkqHfUVTj9N62IC",
-                "password": "$2a$10$3PD3GKmEB8npbuX5VoeO1O3EqLMVZiG/xH2o4oFfybfZvHOpIudgy"
+                "username": "119dd182",
+                "password": "$2a$10$KnlaJkljmHaRvyEojx2sHeSPkWymrqCuq.5lPoyAUxnq/DRGCRss6"
+            },
+            {
+                "username": "119dd182",
+                "password": "$2a$10$EFzpHMq5QJkg.8hVu.bbkO1EANSuUoQWG5623xTx8eayXdDoPqc8C"
+            },
+            {
+                "username": "1386cd",
+                "password": "$2a$10$AquTfc/2r6FxT.xDFZyO2O.jYImM/eie25aUOmsCUSF3CTkIbb.ii"
+            },
+            {
+                "username": "0183",
+                "password": "$2a$10$qttRlwXnzjmiy67ln17f1OrGUJPylD3H10kWz.sGnkiGoxK2yt8q."
+            },
+            {
+                "username": "119dd182",
+                "password": "$2a$10$FJANnEC8Si/ZUyopeL8z6e9L3kLMuAK3NFAw9A95UmZK8sDYLz1U2"
             }
         ],
-        "tokenSecret": "fed419c07a573718941b2d6b088f4aa96d5dfcb212985767371c7a04adc14ca4ba298de17cd6a5881619bbe9e05a90ef058ad143fe2624d915cfea86e0a9e396"
+        "tokenSecret": "ffed419c07a573718941b2d6b088f4aa96d5dfcb212985767371c7a04adc14ca4ba298de17cd6a5881619bbe9e05a90ef058ad143fe2624d915cfea86e0a9e396"
     }
 }

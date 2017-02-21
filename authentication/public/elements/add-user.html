@@ -1,0 +1,40 @@
+<link rel="import" href="../lib/polymer/polymer.html">
+
+<dom-module id="add-user">
+
+    <template>
+        <div class="ui relaxed stackable grid centered" id="admin-container" hidden?="">
+            <div class="two wide column add-user">
+                <div class="ui secondary vertical pointing fluid menu">
+                    <span class="item active right floated">
+                        Add User
+                    </span>
+                </div>
+            </div>
+            <div class="four wide column add-user">
+                <form class="ui form" method='post' action="/secure/add-user">
+                    <div class="field">
+                        <input type="text" name="username" placeholder="Username">
+                    </div>
+                    <div class="field">
+                        <input type="text" name="password" placeholder="Password">
+                    </div>
+                    <button class="ui positive button column right floated">
+                        <i class="plus icon"></i>Add User
+                    </button>
+                </form>
+            </div>
+        </div>
+    </template>
+
+    <script>
+
+    Polymer({
+
+        is: "add-user"
+
+    });
+
+    </script>
+
+</dom-module>

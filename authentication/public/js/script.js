@@ -59,8 +59,8 @@ $(function(){
 
     setDefaultView = function(){
 
-        changeActive('#add-user');
-        $('.add-user').show();
+        changeActive('#remove-user');
+        $('.remove-user').show();
 
     }();
 

@@ -57,16 +57,29 @@ app.use('/secure*', function(req, res, next){
     }
 
     console.log('SECURE*: '+authToken);
-    if(authToken)
+    console.log(req.originalUrl);
+    if(authToken && req.originalUrl =='/secure')
     {
 
         console.log('TOKEN TOKEN');
         customAuth.verifyToken(req, res, authToken, 'application1', __dirname + '/secure.html', '/error');
         authToken = "";
 
+    }
 
+    else if (authToken)
 
-    }else {
+    {
+
+        console.log('TOKEN TOKEN TOKEN');
+        customAuth.verifyToken(req, res, authToken, 'application1', '', '/error', next);
+        authToken = "";
+
+    }
+
+    else
+
+    {
 
         return next();
     }
@@ -160,7 +173,7 @@ errorRouter.route('/').get(function(req, res){
 addUserRouter.route('/').post(function(req, res){
     console.log('ADD USER L1 ');
 
-    credentials.application1.users.push({'username':bcrypt.hashSync(req.body.username, saltRounds),'password':bcrypt.hashSync(req.body.password, saltRounds)});
+    credentials.application1.users.push({'username':customAuth.encrypt(req.body.username),'password':bcrypt.hashSync(req.body.password, saltRounds)});
 
 
 
@@ -245,11 +258,11 @@ app.use(function(req, res) {
 
 //HANDLE ALL OTHER ERRORS AS A SERVER ERROR
 
-app.use(function(error, req, res, next) {
-
-    res.status(500).send('500: Internal Server Error');
-
-});
+// app.use(function(error, req, res, next) {
+//
+//     res.status(500).send('500: Internal Server Error');
+//
+// });
 
 //DEFAULT LISTEN USING EXPRESS
 

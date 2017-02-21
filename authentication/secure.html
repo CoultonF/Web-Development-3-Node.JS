@@ -9,9 +9,26 @@
     <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
     <script src="js/script.js"></script>
 
-</head>
+    <!-- INCLUDE THE ELEMENTS FOR THE SHADOW DOM -->
+    <script src="lib/webcomponentsjs/webcomponents.js"></script>
 
-<body>
+    <!-- IMPORT THE ELEMENT THAT HAS THE POLYMER ELEMENT -->
+    <link rel="import" href="elements/add-user.html">
+    <link rel="import" href="elements/remove-user.html">
+
+
+</head>
+<script>
+
+    window.Polymer = window.Polymer || {};
+
+    window.Polymer.dom = "shadow";
+
+</script>
+
+<!-- UNRESOLVED WILL ONLY LOAD BODY WHEN ALL POLYMER ELEMENTS ARE LOADED TO ELIMINATE FLICKERING -->
+
+<body unresolved>
 
     <div class="ui sidebar inverted vertical menu">
         <a class="active item" id="add-app">
@@ -37,121 +54,29 @@
             <i class="user icon"></i>
             Logout
         </a>
-  </div>
-  <div class="pusher">
+    </div>
+    <div class="pusher">
 
-    <!-- <div class="ui inverted menu stackable">
-        <a class="active item" id="add-app">
-            Add App
-        </a>
-        <a class="item" id="remove-app">
-            Remove App
-        </a>
-        <a class="item" id="gen-app-token">
-            Generate App Token
-        </a>
-        <a class="item" id="add-user">
-            Add User
-        </a>
-        <a class="item" id="remove-user">
-            Remove User
-        </a>
-        <a class="item" id="modify-user">
-            Modify User
-        </a>
-
-        <a class="right item" href="/">
-            <i class="user icon"></i>
-            Logout
-        </a>
-    </div> -->
-
-    <br><br>
-
-    <div class="ui segment container admin-padding">
-        <button class="menu-icon ui button basic small"><i class="content icon large"></i><b>Menu</b></button>
         <br><br>
 
-        <div class="ui relaxed stackable grid centered" id="admin-container">
-
-            <!-- <span id="add-user-menu"> -->
-
-            <div class="two wide column add-user">
-                <div class="ui secondary vertical pointing fluid menu">
-                    <span class="item active right floated">
-                        Add User
-                    </span>
-                </div>
-            </div>
-            <div class="four wide column add-user">
-                <form class="ui form" method='post' action="/secure/add-user">
-                    <div class="field">
-                        <input type="text" name="username" placeholder="Username">
-                    </div>
-                    <div class="field">
-                        <input type="text" name="password" placeholder="Password">
-                    </div>
-                    <button class="ui positive button column right floated">
-                        <i class="plus icon"></i>Add User
-                    </button>
-                </form>
-            </div>
-            <form class="ui grid remove-user hide twelve wide column" method='post' action="/secure/add-user">
-                <h3>Remove User</h3>
-                <table class="ui unstackable celled table ">
-                    <thead>
-                        <tr><th class="two wide">User ID</th>
-                            <th class="ten wide">Username</th>
-                            <th class="one wide"></th>
-                        </tr></thead>
-                        <tbody>
-                            <tr>
-                                <td>ID</td>
-                                <td>Username</td>
-                                <td class="collapsing">
-                                    <div class="ui fitted checkbox">
-                                        <input type="checkbox"> <label></label>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>ID</td>
-                                <td>Username</td>
-                                <td class="collapsing">
-                                    <div class="ui fitted checkbox">
-                                        <input type="checkbox"> <label></label>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Cell</td>
-                                <td>Cell</td>
-                                <td class="collapsing fitted">
-                                    <div class="ui fitted checkbox">
-                                        <input type="checkbox"> <label></label>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot class="full-width">
-
-                            <tr><th colspan="3">
-
-                                <button class="right floated negative ui button"><i class="remove user icon"></i>Remove User(s)</button>
-                            </th>
-                        </tr></tfoot>
-                    </table>
-                </form>
-                <!-- </span> -->
-
-            </div>
-
+        <div class="ui segment container admin-padding">
+            <button class="menu-icon ui button basic small"><i class="content icon large"></i><b>Menu</b></button>
             <br><br>
 
-        </div>
+
+
+                <!-- <span id="add-user-menu"> -->
+                <add-user class="add-user"></add-user>
+
+                <remove-user class="remove-user"><remove-user></remove-user></remove-user>
+                    <!-- </span> -->
+
+                <br><br>
+
+            </div>
 
 
 
-    </body>
+        </body>
 
-    </html>
+        </html>
