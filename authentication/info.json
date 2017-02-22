@@ -1,23 +1,32 @@
 {
-    "admin": [
-        {
-            "username": "$2a$10$sHfK4S9z8r5p3ZkLZ9AQWusCsc9C2yFRDNkL09LqyZgRgXUKBtVMu",
-            "password": "$2a$10$fDbYQ7vEeOMvJDMp9XFUM.EzEEogUhdOqoFS3P7bLA8NY2vQj2d2a",
-            "token": ""
-        }
-    ],
+    "admin": {
+        "users": [
+            {
+                "username": "$2a$10$sHfK4S9z8r5p3ZkLZ9AQWusCsc9C2yFRDNkL09LqyZgRgXUKBtVMu",
+                "password": "$2a$10$fDbYQ7vEeOMvJDMp9XFUM.EzEEogUhdOqoFS3P7bLA8NY2vQj2d2a"
+            }
+        ],
+        "token": ""
+    },
     "application1": {
         "users": [
             {
                 "username": "$2a$10$sHfK4S9z8r5p3ZkLZ9AQWusCsc9C2yFRDNkL09LqyZgRgXUKBtVMu",
-                "password": "$2a$10$fDbYQ7vEeOMvJDMp9XFUM.EzEEogUhdOqoFS3P7bLA8NY2vQj2d2a",
-                "token": ""
+                "password": "$2a$10$fDbYQ7vEeOMvJDMp9XFUM.EzEEogUhdOqoFS3P7bLA8NY2vQj2d2a"
             },
             {
                 "username": "$2a$10$ADCkw3gsM.tkgwwOGdmh6.A/aN6JNlRWEyF1gVyD2d4Wgs5OeqjX.",
                 "password": "$2a$10$zqwV/cFAKDNLIoUmPpAGo.KsRhuD52iJ/8rSzwaF.xgr0ZMCL64U6"
+            },
+            {
+                "username": "$2a$10$FhmyZwZwfAetTlhIm8.c0.5ggfpRxPb0FCE9q0lS.H3zI9.i2lfoC",
+                "password": "$2a$10$W2V.E13hQu7WfMRWQN0jyOeaCSLIoOb7MU1sAZwHRDmeYnoZE8efy"
+            },
+            {
+                "username": "$2a$10$h2AQsetUOhc39lwf0Z/KhuPnyAnjkTwZxgnB6SrSmlWisuAK7IXkq",
+                "password": "$2a$10$c9qLuCCVadeYWxiEO9rK8eaQXDueW1eNakEaO61Rq5VYyu21ofkYK"
             }
         ],
-        "info": []
+        "token": ""
     }
 }

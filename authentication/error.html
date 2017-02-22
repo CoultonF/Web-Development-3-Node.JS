@@ -9,17 +9,7 @@
     <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
 
     <script>
-    $(document).ready(function(){
-        $('#signIn').click(function(){
-            var username = $('#username').val();
-            var password = $('#password').val();
 
-            $.post('/login',{"username":username,"password":password},function(data){
-                console.log(username + password);
-            });
-        });
-
-    });
     </script>
 
 </head>

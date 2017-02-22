@@ -8,17 +8,17 @@ bodyParser = require('body-parser'),
 
 bcrypt = require('bcrypt'),
 
-http = require('http'),
-
 credentials = require('./info.json'),
 
-jwt = require('jsonwebtoken'),
-
 fs = require('fs'),
+
+customAuth = require('./customAuth.js'),
 
 app = express(),
 
 loginRouter = express.Router(),
+
+logoutRouter = express.Router(),
 
 secureRouter = express.Router(),
 
@@ -28,89 +28,118 @@ errorRouter = express.Router(),
 
 addUserRouter = express.Router(),
 
+//USERNAME AND PASSWORD HASHING SALT ROUNDS
+
 saltRounds = 10,
 
 port = 3002,
 
-secretKey = 'secret';
+//AUTH TOKEN SECRET
+
+secretKey = 'secret',
+
+token = "";
+
+
+
 
 app.use(express.static(__dirname + '/public'));
 
 app.use(bodyParser.urlencoded({extended:false}));
 
-app.post('/', function(req,res){
+//DEFAULT ROUTE OF '/'
 
-    var username = req.body.username;
+app.get('/', function(req, res){
 
-    var password = req.body.password;
+    console.log('ROOT: '+token);
 
-    var authenticated = false;
-
-    for(var i = 0; i < credentials.application1.users.length; i++){
-
-        if(bcrypt.compareSync(password, credentials.application1.users[i].password) && username === credentials.application1.users[i].username)
-
-        {
-
-            res.sendFile(__dirname + '/secure.html');
-
-            authenticated = true;
-
-        }
-
-    }
-
-    if(!authenticated)
-
-    res.redirect('/error');
+    res.sendFile(__dirname + '/index.html');
 
 });
 
-loginRouter.route('/').post(function(req, res){
+secureRouter.route('/').get(function(req, res, next){
+
+    if(token)
+
+    {
+
+        customAuth.verifyToken(req, res, token, 'application1', __dirname + '/secure.html', '/error');
+
+    }
+
+    else
+
+    {
+
+        next();
+
+    }
+
+});
+
+errorRouter.route('/').get(function(req, res){
+
+    res.sendFile(__dirname + '/error.html');
+
+});
+
+
+
+
+//loginRouter USED FOR ADMIN LOGIN THROUGH THE '/' ROUTE
+
+loginRouter.route('/').post(function(req, res, next){
+
+    console.log('LOGIN ROUTER');
 
     var username = req.headers.username;
 
-    //console.log('Login router: ' + username);
-
     var password = req.headers.password;
 
-    var permisison = req.headers.permisison || 'admin';
+    //IF LOGGING IN THROUGH THE AUTH SERVER IT CAN BE ASSUMED THAT THE USER IS ADMIN
 
-    var jwt = false;
+    var permission = req.headers.permission || 'admin';
 
-    //re-request info.json as file structure may have been modified
+    var jwt = '';
 
-    //credentials = require('./info.json');
-
-    console.log(__dirname + '/info.json');
+    //RE-READ THE INFO.JSON FILE TO ENSURE THE LATEST LOGIN CREDENTIALS ARE BEING USED
 
     fs.readFile(__dirname + '/info.json', function(err, data){
 
-        if(err){
+        if(err)
 
-            res.send('No authentication data found.');
-            console.log(err);
+        {
+
+            res.status(500).send('500 – Unable to read authentication data found.');
+
             next();
 
         }
+
+        //PUT INFO.JSON INTO CREDENTIALS
+
         credentials = JSON.parse(data);
-        console.log('JSON Credentials ' + JSON.stringify(credentials));
 
-        for(var i = 0; i < credentials[permisison].users.length; i++){
+        for(var i = 0; i < credentials[permission].users.length; i++){
 
-            if(bcrypt.compareSync(password, credentials[permisison].users[i].password) && bcrypt.compareSync( username, credentials[permisison].users[i].username))
+            if(bcrypt.compareSync(password, credentials[permission].users[i].password) && bcrypt.compareSync( username, credentials[permission].users[i].username))
 
             {
 
+                //SETUP THE CLAIMS FOR THE TOKEN
+
+                //THE TOKEN IS MADE FOR THE APPLICATION AUTH NOT USER
+                //THEREFORE, ONLY THE ISSUER OF 'APPLICATION1' NEEDS TO BE USED
+
+                //THIS TOKEN IS USED FOR ALL APP USERS OF ONE APPLICAITON
+
                 var claims = {
 
-                    sub: username,
-
-                    iss: permisison,
-
-                    permissions: permisison
+                    iss: permission
 
                 };
+
+                //PREPARE AUTH TOKEN FOR RESPONSE
 
                 jwt = nJwt.create(claims, secretKey);
 
@@ -125,91 +154,151 @@ loginRouter.route('/').post(function(req, res){
         res.status(200).send(jwt);
 
         else
+        {
 
-        res.status(401).send('Authentication Failed');
-
+        res.status(401).send('/error.html');
+    }
     });
-
-    //console.log('Second');
-
-
 
 });
 
-verifyRouter.use(function(req, res, next){
 
-    //re-request info.json as file structure may have been modified
 
-    credentials = require('./info.json');
 
-    console.log(credentials);
+//verifyRouter USED TO CHECK IF THE AUTH TOKEN THAT IS SEND IN POST REQ IS VALID
+//IF NOT VALID, 401 REPONSE CODE IS SENT
+//OTHERWISE RESPONSE STATUS IS 200 – OK
 
-    var token = req.headers.token;
+verifyRouter.route('/').post(function(req, res, next){
 
-    nJwt.verify(token,secretKey,function(err,verifiedJwt){
+    //re-read info.json as file structure may have been modified
 
-        if (err) {
+    fs.readFile(__dirname + '/info.json', function(err, data){
 
-            return res.status(401).send('Failed to authenticate token.');
+        if(err){
+
+            res.send('No authentication data found.');
+
+            console.log(err);
+
+            next();
 
         }
+
+        credentials = JSON.parse(data);
+
+    });
+
+    var authtoken = req.headers.token;
+
+    nJwt.verify(authtoken,secretKey,function(err,verifiedJwt){
+
+        if (err)
+
+        res.status(401).send('');
 
         else
 
-        {
-
-            req.decoded = verifiedJwt;
-
-            return next();
-
-        }
+        res.status(200).send('200 – OK.');
 
     });
 
 });
 
+
+
+
+//secureRouter USED TO MANAGE THE SECURE PAGE ROUTE AND LOG THE ADMIN IN
+
 secureRouter.route('/').post(function(req,res){
 
-    var username = req.body.username;
+    if(token)
 
-    console.log('login: ' + username);
+    {
 
-    var password = req.body.password;
-
-    var authenticated = false;
-
-    for(var i = 0; i < credentials.admin.length; i++){
-
-        if(bcrypt.compareSync(password, credentials.admin[i].password) && bcrypt.compareSync(username, credentials.admin[i].username))
-
-        {
-
-            res.sendFile(__dirname + '/secure/secure.html');
-
-            authenticated = true;
-
-        }
+        customAuth.verifyToken(req, res, token, 'admin', __dirname + '/secure.html', '/error');
 
     }
 
-    if(!authenticated)
+    else
 
-    res.redirect('/error');
+    {
+
+        customAuth.resetToken();
+
+        customAuth.authorize(req, res, req.body.username, req.body.password, 'admin', __dirname + '/secure.html', '/error');
+
+        token = customAuth.getToken();
+
+        console.log('RETURN VALUE: '+ token);
+
+    }
 
 });
 
+
+
 addUserRouter.route('/').post(function(req, res){
 
-    console.log(req.body.username);
+
     res.send('/secure');
 
 });
 
-errorRouter.route('/').get(function(req, res){
+function saveUsertoJson(username, password, app){
 
-    res.sendFile(__dirname + '/error.html');
+    var obj = JSON.parse(fs.readFileSync('file', 'utf8'));
+
+    credentials[app].users.push({'username':bcrypt.hashSync(username, saltRounds),'password':bcrypt.hashSync(password, saltRounds)});
+
+
+}
+
+
+
+
+logoutRouter.route('/').get(function(req, res){
+
+    //RESET THE TOKEN THAT WAS BEING STORED IN THE APP
+
+    token = "";
+
+    customAuth.resetToken();
+
+    //send to start page
+
+    res.redirect('/');
 
 });
+
+
+app.use('/secure*', function(req, res, next){
+    console.log('SECURE* L1 ');
+
+    var authToken;
+
+    if(customAuth.getToken()){
+
+        authToken = customAuth.getToken();
+        console.log('GET TOKEN: '+authToken);
+
+    }
+
+    console.log('SECURE*: '+authToken);
+    if(authToken)
+    {
+
+        console.log('TOKEN TOKEN');
+        customAuth.verifyToken(req, res, authToken, 'application1', __dirname + '/secure.html', '/error');
+        authToken = "";
+    }else {
+
+        return next();
+    }
+
+});
+
+
 
 app.use('/verify', verifyRouter);
 
@@ -221,11 +310,31 @@ app.use('/secure', secureRouter);
 
 app.use('/secure/add-user', addUserRouter);
 
-app.get('/', function(req, res){
+app.use('/logout', logoutRouter);
 
-    res.sendFile(__dirname + '/index.html');
+
+
+
+
+app.listen(port, function(err){
+
+    if(err){
+
+        console.log('Error: ' + err);
+
+    }
+
+    else
+
+    console.log('Server started at localhost: ' + port);
+
+    console.log(customAuth.getToken());
 
 });
+
+
+
+
 
 app.use(function(req, res) {
 
@@ -233,14 +342,11 @@ app.use(function(req, res) {
 
 });
 
+//HANDLE ALL OTHER ERRORS AS A SERVER ERROR
+
+
 app.use(function(error, req, res, next) {
 
     res.status(500).send('500: Internal Server Error');
-
-});
-
-app.listen(port, function(err){
-
-    console.log('Server started at localhost: ' + port);
 
 });
