@@ -16,6 +16,7 @@
   ],
   "dependencies": {
     "semantic": "^2.2.7",
-    "font-awesome": "^4.7.0"
+    "font-awesome": "^4.7.0",
+    "polymer-starter-kit": "PolymerElements/polymer-starter-kit#^2.1.2"
   }
 }

@@ -1,30 +1,30 @@
+
+<!-- bower install polymerelements/iron-ajax -->
+
+<link rel="import" href="../lib/iron-ajax/iron-ajax.html">
+
 <dom-module id="welcome-title">
     <template id="">
-        <p>Welcome, </p><span>{{username}}</span>
+        Welcome, <strong>{{username}}</strong>.
+        <iron-ajax id="getUsername" url="http://localhost:3001/secure/username" method="GET" handle-as="text" on-response="getUsernameCB" with-credentials='true'></iron-ajax>
     </template>
-    <iron-ajax id="getUsername" url="http://localhost:3000/secure/username" method="GET" handle-as="json" on-response="getUsernameCB" with-credentials='true'></iron-ajax>
+
 </dom-module>
 <script>
     Polymer({
 
         is: "welcome-title",
 
-        properties: {
-
-
-
-        },
-
         ready: function(){
 
+            //this.username = "Working";
             this.$.getUsername.generateRequest();
 
         },
 
-        getUsernameCB: function(res){
+        getUsernameCB: function(data){
 
-            this.username = res.detail.response
-
+            this.username = data.detail.response.charAt(0).toUpperCase() + data.detail.response.slice(1);
         }
 
     })

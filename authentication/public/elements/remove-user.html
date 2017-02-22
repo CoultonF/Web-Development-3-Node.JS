@@ -1,15 +1,20 @@
-<!-- <script src="../lib/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../lib/iron-ajax/iron-ajax.html">
 
-<link rel="import" href="../lib/polymer/polymer.html"> -->
+<link rel="import" href="../lib/polymer/polymer.html">
+
+<link rel="import" href="welcome-title.html">
+
+<link rel="import" href="simple-menu.html">
 
 <dom-module id="remove-user">
 
     <template>
-        <div class="ui relaxed stackable grid centered" id="admin-container">
+        <iron-ajax id="getAll" url="http://localhost:3002/secure/api/all" method="GET" handle-as="json" on-response="getAllCB" with-credentials='true'></iron-ajax>
 
+        <div class="ui relaxed stackable grid centered" id="admin-container">
+            <welcome-title class="ui center aligned row grid"></welcome-title>
             <form class="ui grid remove-user hide twelve wide column" method='post' action="/secure/add-user">
                 <h3>Remove User</h3>
-
                 <table class="ui unstackable celled table ">
                     <thead>
                         <tr><th class="nine wide">Username</th>
@@ -17,12 +22,13 @@
                             <th class="one wide"></th>
                         </tr>
                     </thead>
-                    <tbody>
-
-
-                        <tr is="dom-if" if="true">
-                            <td><span>{{employees.username}}</span></td>
-                            <td>{{employees.permission}}</td>
+                    <tbody>{{users}}
+                        <template is="dom-repeat" items="{{users}}" as="user">
+  <span>{{user}}</span>
+</template>
+                        <tr>
+                            <td><span></span></td>
+                            <td></td>
                             <td class="collapsing">
                                 <div class="ui fitted checkbox">
                                     <input type="checkbox"> <label></label>
@@ -53,22 +59,27 @@ Polymer({
 
     is: "remove-user",
 
-    properties: {
+    ready: function(){
 
-        accounts:{
-            type:"string",
-            value:"other"
-        }
+        //this.username = "Working";
+        this.$.getAll.generateRequest();
 
     },
 
+    properties:{
+        _toArray: function(obj) {
 
 
-    ready: function() {
-        this.employees = {
-            username: "username here",
-            password: "permission here"
+
         }
+    },
+
+    getAllCB: function(data){
+
+        // this.users = data.detail.response;
+        console.log(data.detail.response)
+        this.users = data.detail.response;
+
     }
 
 });

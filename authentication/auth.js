@@ -30,11 +30,15 @@ addUserRouter = express.Router(),
 
 tokenRouter = express.Router(),
 
+apiRouter = express.Router(),
+
 //USERNAME AND PASSWORD HASHING SALT ROUNDS
 
 saltRounds = 10,
 
 port = 3002,
+
+application = 'admin',
 
 //AUTH TOKEN SECRET
 
@@ -50,21 +54,34 @@ app.use(bodyParser.urlencoded({extended:false}));
 //DEFAULT ROUTE OF '/'
 
 app.use('/secure*', function(req, res, next){
+    console.log('SECURE* L1 ');
 
-    var authToken;
+    var authToken ='';
 
     if(customAuth.getToken()){
 
         authToken = customAuth.getToken();
+        console.log('GET TOKEN: '+authToken);
 
     }
 
-    if(authToken)
+    console.log('SECURE*: '+authToken);
+    console.log(req.originalUrl);
+    if(authToken && req.originalUrl =='/secure')
+    {
+
+        console.log('TOKEN TOKEN');
+        customAuth.verifyToken(req, res, authToken, application, __dirname + '/secure.html', '/error');
+        authToken = "";
+
+    }
+
+    else if (authToken)
 
     {
 
-        customAuth.verifyToken(req, res, authToken, 'admin', __dirname + '/secure.html', '/error');
-
+        console.log('TOKEN TOKEN TOKEN');
+        customAuth.verifyToken(req, res, authToken, application, '', '/error', next);
         authToken = "";
 
     }
@@ -74,7 +91,6 @@ app.use('/secure*', function(req, res, next){
     {
 
         return next();
-
     }
 
 });
@@ -358,7 +374,34 @@ tokenRouter.route('/').post(function(req, res){
 
 });
 
+apiRouter.route('/all').get(function(req, res){
+    var outputArr = [];
+    var file = fs.readFileSync( __dirname + "/" + "info.json", 'utf8');
+    var jsonObj = JSON.parse(file);
+    console.log(jsonObj);
+    for (var application in jsonObj) {
+        console.log('FLAG1: '+ application);
+        if (jsonObj.hasOwnProperty(application)) {
+            console.log(jsonObj[application]);
+            var appObj = jsonObj[application];
+            for (var i = 0; i < jsonObj[application].users.length; i++) {
+                console.log('FLAG2');
+                console.log(jsonObj[application].users[i].username);
+                var uname = customAuth.decrypt(jsonObj[application].users[i].username);
+                outputArr.push({"username":uname, "permission": application});
+            }
+        }
+    }
+    console.log("OUTPUT: "+outputArr[0].username);
+   res.json(outputArr);
+   res.end();
+});
 
+apiRouter.route('/username').get(function(req,res){
+
+    res.send(customAuth.getUsername());
+
+});
 
 
 
@@ -378,6 +421,8 @@ app.use('/secure/add-user', addUserRouter);
 app.use('/logout', logoutRouter);
 
 app.use('/token', tokenRouter);
+
+app.use('/secure/api', apiRouter);
 
 
 

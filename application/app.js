@@ -30,6 +30,8 @@ authenticated = false,
 
 port = 3001,
 
+application = 'application1',
+
 //TOKEN – I ASSUME FROM THE ASSIGNMENT DOCUMENT THAT THE TOKEN IS FOR THE
 //APPLICATION. "THE APP SHOULD GET AN AUTH TOKEN OTHERWISE BE FALSE."
 //AN EMPTY STRING STORED IN THE APPLICATION IS EQUAL TO FALSE.
@@ -47,7 +49,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use('/secure*', function(req, res, next){
     console.log('SECURE* L1 ');
 
-    var authToken;
+    var authToken ='';
 
     if(customAuth.getToken()){
 
@@ -62,7 +64,7 @@ app.use('/secure*', function(req, res, next){
     {
 
         console.log('TOKEN TOKEN');
-        customAuth.verifyToken(req, res, authToken, 'application1', __dirname + '/secure.html', '/error');
+        customAuth.verifyToken(req, res, authToken, application, __dirname + '/secure.html', '/error');
         authToken = "";
 
     }
@@ -72,7 +74,7 @@ app.use('/secure*', function(req, res, next){
     {
 
         console.log('TOKEN TOKEN TOKEN');
-        customAuth.verifyToken(req, res, authToken, 'application1', '', '/error', next);
+        customAuth.verifyToken(req, res, authToken, application, '', '/error', next);
         authToken = "";
 
     }
@@ -84,6 +86,11 @@ app.use('/secure*', function(req, res, next){
         return next();
     }
 
+});
+
+app.get('/secure/username', function (req, res) {
+    console.log('UN: ' + customAuth.getUsername());
+   res.send(customAuth.getUsername());
 });
 
 app.get('/', function(req, res){
@@ -103,7 +110,7 @@ secureRouter.route('/').get(function(req, res, next){
 
     {
 
-        customAuth.verifyToken(req, res, token, 'application1', __dirname + '/secure.html', '/error');
+        customAuth.verifyToken(req, res, token, application, __dirname + '/secure.html', '/error');
 
     }
 
@@ -130,7 +137,7 @@ secureRouter.route('/').post(function(req,res){
 
     {
         console.log('SECURE VERIFY TOKEN');
-        customAuth.verifyToken(req, res, token, 'application1', __dirname + '/secure.html', '/error');
+        customAuth.verifyToken(req, res, token, application, __dirname + '/secure.html', '/error');
 
     }
 
@@ -140,7 +147,7 @@ secureRouter.route('/').post(function(req,res){
 
         customAuth.resetToken();
 
-        token = customAuth.authorize(req, res, req.body.username, req.body.password, 'application1', __dirname + '/secure.html', '/error');
+        token = customAuth.authorize(req, res, req.body.username, req.body.password, application, __dirname + '/secure.html', '/error');
 
         token = customAuth.getToken();
         console.log('username: ' + req.body.username);

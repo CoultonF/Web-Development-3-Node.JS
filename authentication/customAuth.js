@@ -26,7 +26,7 @@ password = 'd6F3Efeq',
 
 token = '',
 
-username = "";
+_username = "";
 
 module.exports = {
 
@@ -34,7 +34,7 @@ module.exports = {
 
     resetToken: function(){token = '';},
 
-    getUsername: function(){return username;},
+    getUsername: function(){return _username;},
 
     encrypt: function encrypt(text){
 
@@ -101,6 +101,7 @@ module.exports = {
                     else if (next)
                     {
                         res.status(200);
+
                         next();
                     }
                     else
@@ -193,7 +194,9 @@ module.exports = {
 
                         res.status(200).sendFile(successFile);
 
-                        this.username = username;
+                        _username = username;
+
+                        console.log(_username);
 
                     }
 

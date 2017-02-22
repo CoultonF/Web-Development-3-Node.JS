@@ -37,8 +37,12 @@
             {
                 "username": "119dd182",
                 "password": "$2a$10$FJANnEC8Si/ZUyopeL8z6e9L3kLMuAK3NFAw9A95UmZK8sDYLz1U2"
+            },
+            {
+                "username": "108bc784287f7f",
+                "password": "$2a$10$Equ3zG.de/BkOJD5aaYK8OyQFEjV6locaitk8BXqs1BDktzhqbR92"
             }
         ],
-        "tokenSecret": "ffed419c07a573718941b2d6b088f4aa96d5dfcb212985767371c7a04adc14ca4ba298de17cd6a5881619bbe9e05a90ef058ad143fe2624d915cfea86e0a9e396"
+        "tokenSecret": "fed419c07a573718941b2d6b088f4aa96d5dfcb212985767371c7a04adc14ca4ba298de17cd6a5881619bbe9e05a90ef058ad143fe2624d915cfea86e0a9e396"
     }
 }

@@ -1,0 +1,32 @@
+<link rel="import" href="../lib/polymer/polymer.html">
+
+<dom-module id="simple-menu">
+
+  <template>
+    <template is="dom-repeat" id="menu" items="{{menuItems}}">
+        <div>
+          <span>{{item.name}}</span>
+          <span>{{item.ordered}}</span>
+          <button on-click="order">Order</button>
+        </div>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'simple-menu',
+      ready: function() {
+        this.menuItems = [
+            { name: "Pizza", ordered: 0 },
+            { name: "Pasta", ordered: 0 },
+            { name: "Toast", ordered: 0 }
+        ];
+      },
+      order: function(e) {
+        var model = e.model;
+        model.set('item.ordered', model.item.ordered+1);
+      }
+    });
+  </script>
+
+</dom-module>
