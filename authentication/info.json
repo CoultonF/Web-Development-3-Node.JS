@@ -6,7 +6,7 @@
                 "password": "$2a$10$fDbYQ7vEeOMvJDMp9XFUM.EzEEogUhdOqoFS3P7bLA8NY2vQj2d2a"
             }
         ],
-        "token": ""
+        "tokenSecret": "testtest"
     },
     "application1": {
         "users": [
@@ -19,14 +19,10 @@
                 "password": "$2a$10$zqwV/cFAKDNLIoUmPpAGo.KsRhuD52iJ/8rSzwaF.xgr0ZMCL64U6"
             },
             {
-                "username": "$2a$10$FhmyZwZwfAetTlhIm8.c0.5ggfpRxPb0FCE9q0lS.H3zI9.i2lfoC",
-                "password": "$2a$10$W2V.E13hQu7WfMRWQN0jyOeaCSLIoOb7MU1sAZwHRDmeYnoZE8efy"
-            },
-            {
-                "username": "$2a$10$h2AQsetUOhc39lwf0Z/KhuPnyAnjkTwZxgnB6SrSmlWisuAK7IXkq",
-                "password": "$2a$10$c9qLuCCVadeYWxiEO9rK8eaQXDueW1eNakEaO61Rq5VYyu21ofkYK"
+                "username": "$2a$10$8kVYpmApCdKXytPx6ROBWuQ53IJB42cVt.6TPoIkqHfUVTj9N62IC",
+                "password": "$2a$10$3PD3GKmEB8npbuX5VoeO1O3EqLMVZiG/xH2o4oFfybfZvHOpIudgy"
             }
         ],
-        "token": ""
+        "tokenSecret": "fed419c07a573718941b2d6b088f4aa96d5dfcb212985767371c7a04adc14ca4ba298de17cd6a5881619bbe9e05a90ef058ad143fe2624d915cfea86e0a9e396"
     }
 }

@@ -64,7 +64,6 @@ app.use('/secure*', function(req, res, next){
         customAuth.verifyToken(req, res, authToken, 'application1', __dirname + '/secure.html', '/error');
         authToken = "";
 
-        next();
 
 
     }else {
@@ -76,13 +75,16 @@ app.use('/secure*', function(req, res, next){
 
 app.get('/', function(req, res){
 
-    console.log('ROOT: '+token);
-
+    if(customAuth.getToken())
+        res.redirect('/secure');
+    else
     res.sendFile(__dirname + '/index.html');
 
 });
 
 secureRouter.route('/').get(function(req, res, next){
+
+
 
     if(token)
 
@@ -114,7 +116,7 @@ secureRouter.route('/').post(function(req,res){
     if(token)
 
     {
-
+        console.log('SECURE VERIFY TOKEN');
         customAuth.verifyToken(req, res, token, 'application1', __dirname + '/secure.html', '/error');
 
     }
@@ -141,9 +143,14 @@ secureRouter.route('/').post(function(req,res){
 //
 
 errorRouter.route('/').get(function(req, res){
+    if(customAuth.getToken()){
+        customAuth.resetToken();
+        res.redirect('/');
+    }else{
+        res.sendFile(__dirname + '/error.html');
+    }
     console.log('ERROR L1 ');
 
-    res.sendFile(__dirname + '/error.html');
 
 });
 
@@ -228,7 +235,9 @@ app.set('view engine', '.hbs');
 
 //HANDLE PAGE NAVIGATION TO UNKNOWN PAGES (404 ERRORS)
 
+
 app.use(function(req, res) {
+
 
     res.status(404).send('404: Page not Found');
 

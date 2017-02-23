@@ -22,7 +22,7 @@ module.exports = {
 
             method:'POST',
 
-            headers: {'token':authtoken},
+            headers: {'token':authtoken, 'permission':permission},
 
             json:true
 
@@ -34,12 +34,13 @@ module.exports = {
                 var data = '';
                 response.on("data", function (chunk) {
                     data += chunk;
+
                 });
                 response.on('end', function () {
-                    if (response.statusCode == 200)
-                    res.status(200).sendFile(successFile);
+                    if (response.statusCode == 200){
+                    res.status(200).sendFile(successFile);}
                     else{
-                        res.status(404).redirect('/error');
+                        res.status(404).redirect(failureRoute);
                         data = '';
                     }
 
@@ -49,10 +50,10 @@ module.exports = {
         }
 
 
-        verify(function (retToken){
+        return verify(function (retToken){
 
-            //console.log('CUSTOM TOKEN: '+ token);
-
+            console.log('CUSTOM TOKEN: '+ token);
+            return '';
         });
 
     },
@@ -98,7 +99,7 @@ module.exports = {
                     else{
 
                         res.status(404).redirect(failureRoute);
-                        data = false;
+                        data = '';
 
                     }
 

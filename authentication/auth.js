@@ -14,6 +14,8 @@ fs = require('fs'),
 
 customAuth = require('./customAuth.js'),
 
+crypto = require('crypto'),
+
 app = express(),
 
 loginRouter = express.Router(),
@@ -28,6 +30,8 @@ errorRouter = express.Router(),
 
 addUserRouter = express.Router(),
 
+tokenRouter = express.Router(),
+
 //USERNAME AND PASSWORD HASHING SALT ROUNDS
 
 saltRounds = 10,
@@ -35,8 +39,6 @@ saltRounds = 10,
 port = 3002,
 
 //AUTH TOKEN SECRET
-
-secretKey = 'secret',
 
 token = "";
 
@@ -71,7 +73,7 @@ secureRouter.route('/').get(function(req, res, next){
 
     {
 
-        next();
+        //next();
 
     }
 
@@ -104,6 +106,8 @@ loginRouter.route('/').post(function(req, res, next){
 
     //RE-READ THE INFO.JSON FILE TO ENSURE THE LATEST LOGIN CREDENTIALS ARE BEING USED
 
+
+
     fs.readFile(__dirname + '/info.json', function(err, data){
 
         if(err)
@@ -120,6 +124,9 @@ loginRouter.route('/').post(function(req, res, next){
 
         credentials = JSON.parse(data);
 
+        //ASSIGN THE SECRET KEY TO
+        var secretKey = credentials[permission].tokenSecret;
+
         for(var i = 0; i < credentials[permission].users.length; i++){
 
             if(bcrypt.compareSync(password, credentials[permission].users[i].password) && bcrypt.compareSync( username, credentials[permission].users[i].username))
@@ -135,7 +142,7 @@ loginRouter.route('/').post(function(req, res, next){
 
                 var claims = {
 
-                    iss: permission
+                    iss: permission,
 
                 };
 
@@ -165,14 +172,14 @@ loginRouter.route('/').post(function(req, res, next){
 
 
 
-//verifyRouter USED TO CHECK IF THE AUTH TOKEN THAT IS SEND IN POST REQ IS VALID
+//verifyRouter USED TO CHECK IF THE AUTH TOKEN THAT IS SENT IN POST REQ IS VALID
 //IF NOT VALID, 401 REPONSE CODE IS SENT
 //OTHERWISE RESPONSE STATUS IS 200 – OK
 
 verifyRouter.route('/').post(function(req, res, next){
 
     //re-read info.json as file structure may have been modified
-
+    console.log('VERIFY L1');
     fs.readFile(__dirname + '/info.json', function(err, data){
 
         if(err){
@@ -186,23 +193,40 @@ verifyRouter.route('/').post(function(req, res, next){
         }
 
         credentials = JSON.parse(data);
-
+        console.log('VERIFY L2');
     });
+
+
+    console.log('VERIFY L3');
 
     var authtoken = req.headers.token;
 
-    nJwt.verify(authtoken,secretKey,function(err,verifiedJwt){
+    var secretKey = credentials[req.headers.permission].tokenSecret;
+
+    nJwt.verify(authtoken, secretKey,function(err,verifiedJwt){
+
+        console.log('VERIFY L5');
+
+        //var tempJSON = JSON.parse(verifiedJwt);
+
+        console.log(verifiedJwt);
+
+        //console.log(verifiedJwt.body.iss + ' | '+  req.headers.permission);
 
         if (err)
 
-        res.status(401).send('');
+        return res.status(401).send('');
 
-        else
+        else if(verifiedJwt.body.iss == req.headers.permission)
+        {
 
-        res.status(200).send('200 – OK.');
+            console.log('Token Claims: '+JSON.stringify(verifiedJwt) +'\n');
+            //res.end();
+            return res.status(200).send('200 – OK.');
 
+        }
     });
-
+    console.log('VERIFY L5');
 });
 
 
@@ -272,6 +296,46 @@ logoutRouter.route('/').get(function(req, res){
 });
 
 
+
+tokenRouter.route('/').post(function(req, res){
+
+    console.log('TOKEN ROUTE: '+req.headers.permission);
+
+    var tokenSecret = crypto.randomBytes(64).toString('hex');
+
+    var infoJSON;
+
+    infoJSON = JSON.parse(fs.readFileSync(__dirname + '/info.json', 'utf8'));
+
+
+
+    console.log(infoJSON);
+
+    console.log('TOKEN: '+tokenSecret);
+
+    console.log();
+
+    infoJSON[req.headers.permission].tokenSecret = tokenSecret;
+
+    infoJSON = JSON.stringify(infoJSON, null, 4);
+
+    fs.writeFile(__dirname + '/../authentication/info.json', infoJSON, 'utf-8', function(err){
+
+        if (err)
+
+        return console.log(err);
+
+        //console.log(data);
+
+        res.redirect('/secure');
+
+    });
+res.send('done.');
+});
+
+
+
+
 app.use('/secure*', function(req, res, next){
     console.log('SECURE* L1 ');
 
@@ -312,6 +376,7 @@ app.use('/secure/add-user', addUserRouter);
 
 app.use('/logout', logoutRouter);
 
+app.use('/token', tokenRouter);
 
 
 
