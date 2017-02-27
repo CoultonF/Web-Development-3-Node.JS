@@ -1,0 +1,50 @@
+<link rel="import" href="../lib/iron-ajax/iron-ajax.html">
+
+<link rel="import" href="../lib/polymer/polymer.html">
+
+<link rel="import" href="welcome-title.html">
+
+
+
+<dom-module id="add-app">
+
+    <template>
+
+        <div class="ui relaxed stackable grid centered" id="admin-container">
+            <welcome-title class="ui center aligned row grid"></welcome-title>
+            <div class="two wide column app-app">
+                <div class="ui secondary vertical pointing fluid menu">
+                    <span class="item active right floated">
+                        Add App
+                    </span>
+                </div>
+            </div>
+            <div class="four wide column app-app">
+                <form class="ui form" method='post' action="/secure/add-app">
+                    <div class="field">
+                        <input type="text" name="username" placeholder="Application Title" required>
+                    </div>
+
+                    <br>
+                    <button class="ui positive button column right floated">
+                        <i class="plus icon"></i>Add Application
+                    </button>
+                </form>
+            </div>
+        </div>
+    </template>
+
+
+
+</dom-module>
+<script>
+
+Polymer({
+
+    is: "add-app"
+
+});
+
+
+
+</script>

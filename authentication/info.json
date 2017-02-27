@@ -17,6 +17,10 @@
             {
                 "username": "058ad9992f",
                 "password": "$2a$10$fDbYQ7vEeOMvJDMp9XFUM.EzEEogUhdOqoFS3P7bLA8NY2vQj2d2a"
+            },
+            {
+                "username": "119dd182",
+                "password": "$2a$10$v8Dx6UJHNCrx72HprdSy.OcvojuO1LMTCutDlEbI/sgtGXpGv/sfG"
             }
         ],
         "tokenSecret": "fed419c07a573718941b2d6b088f4aa96d5dfcb212985767371c7a04adc14ca4ba298de17cd6a5881619bbe9e05a90ef058ad143fe2624d915cfea86e0a9e396"

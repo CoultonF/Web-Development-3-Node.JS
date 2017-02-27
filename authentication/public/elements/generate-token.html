@@ -1,33 +1,32 @@
+<link rel="import" href="../lib/iron-ajax/iron-ajax.html">
+
+<link rel="import" href="../lib/iron-ajax/iron-ajax.html">
+
 <link rel="import" href="../lib/polymer/polymer.html">
 
 <link rel="import" href="welcome-title.html">
 
 
-<dom-module id="add-user">
+
+<dom-module id="generate-token">
 
     <template>
-
+        <iron-ajax id="getAllApps" url="http://localhost:3002/secure/api/all-apps" method="GET" handle-as="json" on-response="getAllAppsCB" with-credentials='true'></iron-ajax>
         <div class="ui relaxed stackable grid centered" id="admin-container">
             <welcome-title class="ui center aligned row grid"></welcome-title>
-            <div class="two wide column add-user">
+            <div class="two wide column generate-token">
                 <div class="ui secondary vertical pointing fluid menu">
                     <span class="item active right floated">
-                        Add User
+                        Select App
                     </span>
                 </div>
             </div>
-            <div class="four wide column add-user">
-                <form class="ui form" method='post' action="/secure/add-user">
-                    <div class="field">
-                        <input type="text" name="username" placeholder="Username" required>
-                    </div>
-                    <div class="field">
-                        <input type="text" name="password" placeholder="Password" required>
-                    </div>
-                    <iron-ajax id="getAllApps" url="http://localhost:3002/secure/api/all-apps" method="GET" handle-as="json" on-response="getAllAppsCB" with-credentials='true'></iron-ajax>
+            <div class="four wide column generate-token">
+                <form class="ui form" method='post' action="/secure/generate-token">
+
                     <div>
                         <select class="ui dropdown" name="permission" required>
-                            <option>Application</option>
+                            <option>Select App</option>
                             <template is="dom-repeat" items="{{appsData}}" as="value">
                                 <option value="{{value.application}}">{{value.application}}</option>
                             </template>
@@ -37,29 +36,33 @@
                     </div>
                     <br>
                     <button class="ui positive button column right floated">
-                        <i class="plus icon"></i>Add User
+                        <i class="plus icon"></i>Generate Token
                     </button>
                 </form>
             </div>
         </div>
     </template>
 
-    <script>
 
-    Polymer({
-
-        is: "add-user",
-
-        ready: function() {
-            this.$.getAllApps.generateRequest();
-        },
-
-        getAllAppsCB: function(data) {
-            this.appsData = data.detail.response
-        }
-
-    });
-
-    </script>
 
 </dom-module>
+<script>
+
+Polymer({
+
+    is: "generate-token",
+
+    ready: function() {
+        this.$.getAllApps.generateRequest();
+    },
+
+    getAllAppsCB: function(data) {
+        this.appsData = data.detail.response
+    }
+
+});
+
+
+
+
+</script>

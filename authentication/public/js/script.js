@@ -3,6 +3,7 @@ $(function(){
     $('#add-app').click(function(){
 
         changeActive(this);
+        $('.remove-user').show();
         $('.ui.sidebar').sidebar('toggle');
 
     });
@@ -10,13 +11,15 @@ $(function(){
     $('#remove-app').click(function(){
 
         changeActive(this);
+        $('.remove-app').show();
         $('.ui.sidebar').sidebar('toggle');
 
     });
 
-    $('#gen-app-token').click(function(){
+    $('#generate-token').click(function(){
 
         changeActive(this);
+        $('.generate-token').show();
         $('.ui.sidebar').sidebar('toggle');
 
     });
@@ -40,6 +43,8 @@ $(function(){
     $('#modify-user').click(function(){
 
         changeActive(this);
+        $('.modify-user').show();
+        $('.ui.sidebar').sidebar('toggle');
 
     });
 
@@ -53,14 +58,12 @@ $(function(){
 
         $('#admin-container>*').removeClass('hide');
 
-
-
     };
 
     setDefaultView = function(){
 
-        changeActive('#remove-user');
-        $('.remove-user').show();
+        changeActive('#add-app');
+        $('.add-app').show();
 
     }();
 

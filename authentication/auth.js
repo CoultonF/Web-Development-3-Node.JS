@@ -32,6 +32,14 @@ addUserRouter = express.Router(),
 
 removeUserRouter = express.Router(),
 
+addAppRouter = express.Router(),
+
+removeAppRouter = express.Router(),
+
+generateTokenRouter = express.Router(),
+
+renewTokenRouter = express.Router(),
+
 tokenRouter = express.Router(),
 
 apiRouter = express.Router(),
@@ -379,7 +387,7 @@ apiRouter.route('/all-apps').get(function(req, res){
     console.log(jsonObj);
     for (var application in jsonObj) {
         console.log('FLAG1: '+ application);
-        outputArr.push(application);
+        outputArr.push({"application":application, "count":jsonObj[application].users.length});
     }
     console.log(outputArr);
     res.json(outputArr);
