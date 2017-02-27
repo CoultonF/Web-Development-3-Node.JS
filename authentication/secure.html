@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Assignment 1</title>
+
     <script src="lib/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="lib/semantic/dist/semantic.min.css">
     <script src="lib/semantic/dist/semantic.min.js"></script>
@@ -12,7 +13,7 @@
     <!-- INCLUDE THE ELEMENTS FOR THE SHADOW DOM -->
     <script src="lib/webcomponentsjs/webcomponents.js"></script>
 
-    <!-- IMPORT THE ELEMENT THAT HAS THE POLYMER ELEMENT -->
+    <!-- IMPORT THE ELEMENTS -->
     <link rel="import" href="elements/add-user.html">
     <link rel="import" href="elements/remove-user.html">
 
@@ -21,8 +22,6 @@
 <script>
 
     window.Polymer = window.Polymer || {};
-
-    window.Polymer.dom = "shadow";
 
 </script>
 
@@ -65,11 +64,9 @@
 
 
 
-                <!-- <span id="add-user-menu"> -->
                 <add-user class="add-user"></add-user>
 
-                <remove-user class="remove-user"><remove-user></remove-user></remove-user>
-                    <!-- </span> -->
+                <remove-user class="remove-user"></remove-user>
 
                 <br><br>
 

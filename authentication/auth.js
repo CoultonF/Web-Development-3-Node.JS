@@ -8,6 +8,8 @@ bcrypt = require('bcrypt'),
 
 credentials = require('./info.json'),
 
+otherCredentials = require('./info.json'),
+
 fs = require('fs'),
 
 customAuth = require('./customAuth.js'),
@@ -27,6 +29,8 @@ verifyRouter = express.Router(),
 errorRouter = express.Router(),
 
 addUserRouter = express.Router(),
+
+removeUserRouter = express.Router(),
 
 tokenRouter = express.Router(),
 
@@ -97,15 +101,15 @@ app.use('/secure*', function(req, res, next){
 
 app.get('/', function(req, res){
 
-//IF IS VALID AUTH TOKEN DONT MAKE THE USER LOGIN AGAIN, JUST SEND TO /SECURE
+    //IF IS VALID AUTH TOKEN DONT MAKE THE USER LOGIN AGAIN, JUST SEND TO /SECURE
 
     if(customAuth.getToken())
 
-        res.redirect('/secure');
+    res.redirect('/secure');
 
     else
 
-        res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/index.html');
 
 });
 
@@ -175,26 +179,6 @@ errorRouter.route('/').get(function(req, res){
 
 });
 
-addUserRouter.route('/').post(function(req, res){
-
-    credentials.admin.users.push({'username':bcrypt.customAuth.encrypt(req.body.username),'password':bcrypt.hashSync(req.body.password, saltRounds)});
-
-    //STRINGIFY PARAM: 4 – MEANS INDENT 4 SPACES TO ENSURE READABILITY
-
-    var data = JSON.stringify(credentials, null, 4);
-
-    fs.writeFile(__dirname + '/info.json', data, 'utf-8', function(err){
-
-        if (err)
-
-            return console.log(err);
-
-        res.redirect('/secure');
-
-    });
-
-});
-
 //loginRouter USED FOR ADMIN LOGIN THROUGH THE '/' ROUTE
 
 loginRouter.route('/').post(function(req, res, next){
@@ -258,7 +242,11 @@ loginRouter.route('/').post(function(req, res, next){
 
                 jwt = nJwt.create(claims, secretKey);
 
+
+
                 jwt = jwt.compact();
+
+                console.log('COPY THIS SHIT: ' + jwt);
 
             }
 
@@ -266,11 +254,11 @@ loginRouter.route('/').post(function(req, res, next){
 
         if(jwt)
 
-            res.status(200).send(jwt);
+        res.status(200).send(jwt);
 
         else
 
-            res.status(401).send('/error.html');
+        res.status(401).send('/error.html');
 
     });
 
@@ -287,21 +275,7 @@ verifyRouter.route('/').post(function(req, res, next){
 
     //re-read info.json as file structure may have been modified
 
-    fs.readFile(__dirname + '/info.json', function(err, data){
-
-        if(err)
-
-        {
-
-            res.send('No authentication data found.');
-
-            console.log(err);
-
-        }
-
-        credentials = JSON.parse(data);
-
-    });
+    credentials = JSON.parse(fs.readFileSync(__dirname + '/info.json'));
 
     var authtoken = req.headers.token;
 
@@ -311,11 +285,11 @@ verifyRouter.route('/').post(function(req, res, next){
 
         if (err)
 
-            return res.status(401).send('');
+        return res.status(401).send('');
 
         else if(verifiedJwt.body.iss == req.headers.permission)
 
-            return res.status(200).send('200 – OK.');
+        return res.status(200).send('200 – OK.');
 
     });
 
@@ -325,11 +299,7 @@ verifyRouter.route('/').post(function(req, res, next){
 
 
 
-addUserRouter.route('/').post(function(req, res){
 
-    res.send('/secure');
-
-});
 
 
 
@@ -366,7 +336,7 @@ tokenRouter.route('/').post(function(req, res){
 
         if (err)
 
-            return console.log(err);
+        return console.log(err);
 
         res.redirect('/secure');
 
@@ -393,8 +363,8 @@ apiRouter.route('/all').get(function(req, res){
         }
     }
     console.log("OUTPUT: "+outputArr[0].username);
-   res.json(outputArr);
-   res.end();
+    res.json(outputArr);
+    res.end();
 });
 
 apiRouter.route('/username').get(function(req,res){
@@ -402,7 +372,94 @@ apiRouter.route('/username').get(function(req,res){
     res.send(customAuth.getUsername());
 
 });
+apiRouter.route('/all-apps').get(function(req, res){
+    var outputArr = [];
+    var file = fs.readFileSync( __dirname + "/" + "info.json", 'utf8');
+    var jsonObj = JSON.parse(file);
+    console.log(jsonObj);
+    for (var application in jsonObj) {
+        console.log('FLAG1: '+ application);
+        outputArr.push(application);
+    }
+    console.log(outputArr);
+    res.json(outputArr);
+    res.end();
+});
 
+apiRouter.route('/username').get(function(req,res){
+
+    res.send(customAuth.getUsername());
+
+});
+//THE ADMIN USER WILL NOT BE REMOVED IF THERE IS ONLY ONE ADMIN
+
+removeUserRouter.route('/').post(function(req, res){
+
+    //IF NO SELECTION IS MADE GO BACK TO /SECURE
+    if(!req.body.removeUserData)
+    return res.redirect('/secure');
+    try{
+        var jsonObj = JSON.parse(req.body.removeUserData);
+        var file = fs.readFileSync( __dirname + "/" + "info.json", 'utf8');
+        var jsonFile = JSON.parse(file);
+        for (var i = 0; i < jsonFile[jsonObj.permission].users.length; i++) {
+            if(customAuth.decrypt(jsonFile[jsonObj.permission].users[i].username) == jsonObj.username){
+                jsonFile[jsonObj.permission].users.splice(i,1);
+                if(jsonFile.admin.users.length >= 1){
+                    var data = JSON.stringify(jsonFile, null, 4);
+                    try {
+
+                        fs.writeFileSync(__dirname + '/info.json', data, 'utf-8');
+                    }
+                    catch(err) {
+                        console.log(err);
+                    }
+                }
+                return res.redirect('/secure');
+            }
+        }
+    }
+    catch(err){
+        return res.redirect('/');
+    }
+});
+
+addUserRouter.route('/').post(function(req, res){
+
+    try{
+        console.log('FLAG HERE--------------------------------------------');
+        console.log(req.body.permission);
+        console.log(req.body.username);
+        console.log(req.body.password);
+
+    otherCredentials = JSON.parse(fs.readFileSync( __dirname + "/" + "info.json", 'utf8'));
+
+    otherCredentials[req.body.permission].users.push({'username':customAuth.encrypt(req.body.username),'password':bcrypt.hashSync(req.body.password, saltRounds)});
+
+
+    //STRINGIFY PARAM: 4 – MEANS INDENT 4 SPACES TO ENSURE READABILITY
+    var data = JSON.stringify(otherCredentials, null, 4);
+    console.log('DATA: '+data);
+    fs.writeFileSync(__dirname + '/../authentication/info.json', data, 'utf-8');
+    // fs.writeFile(__dirname + '/../authentication/info.json', data, 'utf-8', function(err){
+    //
+    //     if (err)
+    //
+    //     return console.log(err);
+    //
+    //     console.log(data);
+
+        res.redirect('/secure');
+
+    //});
+}
+
+catch(err){
+    console.log(err);
+    return res.redirect('/');
+}
+
+});
 
 
 
@@ -416,13 +473,15 @@ app.use('/error', errorRouter);
 
 app.use('/secure', secureRouter);
 
-app.use('/secure/add-user', addUserRouter);
-
 app.use('/logout', logoutRouter);
 
 app.use('/token', tokenRouter);
 
 app.use('/secure/api', apiRouter);
+
+app.use('/secure/remove-user', removeUserRouter);
+
+app.use('/secure/add-user', addUserRouter);
 
 
 
@@ -431,11 +490,11 @@ app.listen(port, function(err){
 
     if(err)
 
-        console.log('Error: ' + err);
+    console.log('Error: ' + err);
 
     else
 
-        console.log('Server started at localhost: ' + port);
+    console.log('Server started at localhost: ' + port);
 
 });
 

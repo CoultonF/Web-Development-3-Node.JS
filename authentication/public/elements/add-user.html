@@ -19,11 +19,23 @@
             <div class="four wide column add-user">
                 <form class="ui form" method='post' action="/secure/add-user">
                     <div class="field">
-                        <input type="text" name="username" placeholder="Username">
+                        <input type="text" name="username" placeholder="Username" required>
                     </div>
                     <div class="field">
-                        <input type="text" name="password" placeholder="Password">
+                        <input type="text" name="password" placeholder="Password" required>
                     </div>
+                    <iron-ajax id="getAllApps" url="http://localhost:3002/secure/api/all-apps" method="GET" handle-as="json" on-response="getAllAppsCB" with-credentials='true'></iron-ajax>
+                    <div>
+                        <select class="ui dropdown" name="permission" required>
+                            <option>Application</option>
+                            <template is="dom-repeat" items="{{appsData}}" as="value">
+                                <option value="{{value}}">{{value}}</option>
+                            </template>
+                            <!-- <option value=""></option>
+                            <option value=""></option> -->
+                        </select>
+                    </div>
+                    <br>
                     <button class="ui positive button column right floated">
                         <i class="plus icon"></i>Add User
                     </button>
@@ -36,7 +48,15 @@
 
     Polymer({
 
-        is: "add-user"
+        is: "add-user",
+
+        ready: function() {
+            this.$.getAllApps.generateRequest();
+        },
+
+        getAllAppsCB: function(data) {
+            this.appsData = data.detail.response
+        }
 
     });
 

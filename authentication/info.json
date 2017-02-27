@@ -4,43 +4,19 @@
             {
                 "username": "058ad9992f",
                 "password": "$2a$10$fDbYQ7vEeOMvJDMp9XFUM.EzEEogUhdOqoFS3P7bLA8NY2vQj2d2a"
+            },
+            {
+                "username": "119dd182",
+                "password": "$2a$10$CLKpfDdPW0AJQMyTnDcUrOYFqzdE8cQAoVXTIcqOjQJv1MhGcqj1W"
             }
         ],
-        "tokenSecret": "testtest"
+        "tokenSecret": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImp0aSI6ImJmZjRjNmVjLWM1YzAtNGUyOC1hODc4LTQ0NzU4MWNjMDIyYyIsImlhdCI6MTQ4ODE5Mzc0OCwiZXhwIjoxNDg4MTk3MzQ4fQ.tVGY6xlXr1G3RP6hBAXUb0RF8tHOHIC1q-tq1JPL1bw"
     },
     "application1": {
         "users": [
             {
                 "username": "058ad9992f",
                 "password": "$2a$10$fDbYQ7vEeOMvJDMp9XFUM.EzEEogUhdOqoFS3P7bLA8NY2vQj2d2a"
-            },
-            {
-                "username": "119dd182",
-                "password": "$2a$10$twFH2o/voEo8eY0/tW8qx.fSXqr8ONF1Lh/IIQttVnb661LNJdRqu"
-            },
-            {
-                "username": "119dd182",
-                "password": "$2a$10$KnlaJkljmHaRvyEojx2sHeSPkWymrqCuq.5lPoyAUxnq/DRGCRss6"
-            },
-            {
-                "username": "119dd182",
-                "password": "$2a$10$EFzpHMq5QJkg.8hVu.bbkO1EANSuUoQWG5623xTx8eayXdDoPqc8C"
-            },
-            {
-                "username": "1386cd",
-                "password": "$2a$10$AquTfc/2r6FxT.xDFZyO2O.jYImM/eie25aUOmsCUSF3CTkIbb.ii"
-            },
-            {
-                "username": "0183",
-                "password": "$2a$10$qttRlwXnzjmiy67ln17f1OrGUJPylD3H10kWz.sGnkiGoxK2yt8q."
-            },
-            {
-                "username": "119dd182",
-                "password": "$2a$10$FJANnEC8Si/ZUyopeL8z6e9L3kLMuAK3NFAw9A95UmZK8sDYLz1U2"
-            },
-            {
-                "username": "108bc784287f7f",
-                "password": "$2a$10$Equ3zG.de/BkOJD5aaYK8OyQFEjV6locaitk8BXqs1BDktzhqbR92"
             }
         ],
         "tokenSecret": "fed419c07a573718941b2d6b088f4aa96d5dfcb212985767371c7a04adc14ca4ba298de17cd6a5881619bbe9e05a90ef058ad143fe2624d915cfea86e0a9e396"
