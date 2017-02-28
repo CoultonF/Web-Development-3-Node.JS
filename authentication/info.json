@@ -4,25 +4,12 @@
             {
                 "username": "058ad9992f",
                 "password": "$2a$10$fDbYQ7vEeOMvJDMp9XFUM.EzEEogUhdOqoFS3P7bLA8NY2vQj2d2a"
-            },
-            {
-                "username": "119dd182",
-                "password": "$2a$10$CLKpfDdPW0AJQMyTnDcUrOYFqzdE8cQAoVXTIcqOjQJv1MhGcqj1W"
             }
         ],
-        "tokenSecret": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImp0aSI6ImJmZjRjNmVjLWM1YzAtNGUyOC1hODc4LTQ0NzU4MWNjMDIyYyIsImlhdCI6MTQ4ODE5Mzc0OCwiZXhwIjoxNDg4MTk3MzQ4fQ.tVGY6xlXr1G3RP6hBAXUb0RF8tHOHIC1q-tq1JPL1bw"
+        "tokenSecret": "66760256d4dcf1a835cbd0ab9367c16cab3c24a568e15a53a3965b9c5ddd6ba8f16a7054ecfd8705c4a699389d0044618cf5b6ea42463fd51f32356fcb1c8d69"
     },
     "application1": {
-        "users": [
-            {
-                "username": "058ad9992f",
-                "password": "$2a$10$fDbYQ7vEeOMvJDMp9XFUM.EzEEogUhdOqoFS3P7bLA8NY2vQj2d2a"
-            },
-            {
-                "username": "119dd182",
-                "password": "$2a$10$v8Dx6UJHNCrx72HprdSy.OcvojuO1LMTCutDlEbI/sgtGXpGv/sfG"
-            }
-        ],
-        "tokenSecret": "fed419c07a573718941b2d6b088f4aa96d5dfcb212985767371c7a04adc14ca4ba298de17cd6a5881619bbe9e05a90ef058ad143fe2624d915cfea86e0a9e396"
+        "users": [],
+        "tokenSecret": "3a25d06a716a621d52cfc94b0d4bfeaab578e0864067cabaaeccc0473db0e48652d2ea7e313e26604734f6df38e70a4a8f8510ce8b73e654bc8e8e2f0dab20bf"
     }
 }

@@ -1,0 +1,99 @@
+<link rel="import" href="../lib/iron-ajax/iron-ajax.html">
+
+<link rel="import" href="../lib/polymer/polymer.html">
+
+<link rel="import" href="welcome-title.html">
+
+
+<dom-module id="modify-user">
+
+    <template>
+        <iron-ajax id="getAll" url="http://localhost:3002/secure/api/all" method="GET" handle-as="json" on-response="getAllCB" with-credentials='true'></iron-ajax>
+
+        <div class="ui relaxed stackable grid" id="admin-container">
+            <welcome-title class="ui center aligned row grid"></welcome-title>
+            <div class="row centered">
+                <div class="ui grid modify-user hide twelve wide column left alligned">
+                    <h3>Modify User</h3>
+                </div>
+            </div>
+            <form class="ui form row centered" method='post' action="/secure/modify-user">
+
+                <div class="ui grid modify-user hide six wide column">
+
+
+                    <table class="ui unstackable celled table ">
+                        <thead>
+                            <tr><th class="nine wide">Username</th>
+                                <th class="three wide">Permission</th>
+                                <th class="one wide"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template is="dom-repeat" items="{{users}}" as="user">
+                                <tr>
+                                    <td>{{user.username}}</td>
+                                    <td>{{user.permission}}</td>
+                                    <td class="collapsing">
+                                        <div class="ui fitted checkbox" required>
+                                            <input required type="radio" name="before_json" value='{"username":"{{user.username}}","permission":"{{user.permission}}"}'> <label></label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+
+
+                        </tbody>
+
+                    </table>
+                </div>
+                <div class="ui modify-user hide six wide column">
+                    <div class="field">
+                        <input type="text" name="username" placeholder="Username" required>
+                    </div>
+                    <div class="field">
+                        <input type="text" name="password" placeholder="Password" required>
+                    </div>
+                    <iron-ajax id="getAllApps" url="http://localhost:3002/secure/api/all-apps" method="GET" handle-as="json" on-response="getAllAppsCB" with-credentials='true'></iron-ajax>
+                    <br>
+                    <button class="ui positive button column right floated">
+                        <i class="plus icon"></i>Edit User
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </template>
+
+
+
+</dom-module>
+<script>
+
+Polymer({
+
+    is: "modify-user",
+
+    ready: function(){
+
+        //this.username = "Working";
+        this.$.getAll.generateRequest();
+        this.$.getAllApps.generateRequest();
+
+    },
+
+    getAllCB: function(data){
+
+        this.users = data.detail.response;
+
+    },
+
+    getAllAppsCB: function(data) {
+        this.appsData = data.detail.response
+    }
+
+});
+
+
+
+</script>

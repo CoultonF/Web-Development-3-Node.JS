@@ -40,9 +40,9 @@ generateTokenRouter = express.Router(),
 
 renewTokenRouter = express.Router(),
 
-tokenRouter = express.Router(),
-
 apiRouter = express.Router(),
+
+modifyRouter = express.Router(),
 
 //USERNAME AND PASSWORD HASHING SALT ROUNDS
 
@@ -328,29 +328,7 @@ logoutRouter.route('/').get(function(req, res){
 
 
 
-tokenRouter.route('/').post(function(req, res){
 
-    var tokenSecret = crypto.randomBytes(64).toString('hex');
-
-    var infoJSON;
-
-    infoJSON = JSON.parse(fs.readFileSync(__dirname + '/info.json', 'utf8'));
-
-    infoJSON[req.headers.permission].tokenSecret = tokenSecret;
-
-    infoJSON = JSON.stringify(infoJSON, null, 4);
-
-    fs.writeFile(__dirname + '/../authentication/info.json', infoJSON, 'utf-8', function(err){
-
-        if (err)
-
-        return console.log(err);
-
-        res.redirect('/secure');
-
-    });
-
-});
 
 apiRouter.route('/all').get(function(req, res){
     var outputArr = [];
@@ -440,37 +418,185 @@ addUserRouter.route('/').post(function(req, res){
         console.log(req.body.username);
         console.log(req.body.password);
 
-    otherCredentials = JSON.parse(fs.readFileSync( __dirname + "/" + "info.json", 'utf8'));
+        otherCredentials = JSON.parse(fs.readFileSync( __dirname + "/" + "info.json", 'utf8'));
 
-    otherCredentials[req.body.permission].users.push({'username':customAuth.encrypt(req.body.username),'password':bcrypt.hashSync(req.body.password, saltRounds)});
+        otherCredentials[req.body.permission].users.push({'username':customAuth.encrypt(req.body.username),'password':bcrypt.hashSync(req.body.password, saltRounds)});
 
 
-    //STRINGIFY PARAM: 4 – MEANS INDENT 4 SPACES TO ENSURE READABILITY
-    var data = JSON.stringify(otherCredentials, null, 4);
-    console.log('DATA: '+data);
-    fs.writeFileSync(__dirname + '/../authentication/info.json', data, 'utf-8');
-    // fs.writeFile(__dirname + '/../authentication/info.json', data, 'utf-8', function(err){
-    //
-    //     if (err)
-    //
-    //     return console.log(err);
-    //
-    //     console.log(data);
+        //STRINGIFY PARAM: 4 – MEANS INDENT 4 SPACES TO ENSURE READABILITY
+        var data = JSON.stringify(otherCredentials, null, 4);
+        console.log('DATA: '+data);
+        fs.writeFileSync(__dirname + '/../authentication/info.json', data, 'utf-8');
+        // fs.writeFile(__dirname + '/../authentication/info.json', data, 'utf-8', function(err){
+        //
+        //     if (err)
+        //
+        //     return console.log(err);
+        //
+        //     console.log(data);
 
         res.redirect('/secure');
 
-    //});
-}
+        //});
+    }
 
-catch(err){
-    console.log(err);
-    return res.redirect('/');
-}
+    catch(err){
+        console.log(err);
+        return res.redirect('/');
+    }
 
 });
 
+addAppRouter.route('/').post(function(req, res){
+
+    try{
+        console.log('FLAG HERER ------------------------------------------------'+req.body.application);
+        var application = req.body.application;
+
+        var _Credentials = JSON.parse(fs.readFileSync( __dirname + "/" + "info.json", 'utf8'));
+        console.log(_Credentials);
+        _Credentials[application]={"users":[],"tokenSecret":""};
 
 
+        //STRINGIFY PARAM: 4 – MEANS INDENT 4 SPACES TO ENSURE READABILITY
+        var data = JSON.stringify(_Credentials, null, 4);
+        console.log('DATA: '+data);
+        fs.writeFileSync(__dirname + '/../authentication/info.json', data, 'utf-8');
+        // fs.writeFile(__dirname + '/../authentication/info.json', data, 'utf-8', function(err){
+        //
+        //     if (err)
+        //
+        //     return console.log(err);
+        //
+        //     console.log(data);
+
+        res.redirect('/secure');
+
+        //});
+    }
+
+    catch(err){
+        console.log(err);
+        return res.redirect('/');
+    }
+
+
+});
+
+removeAppRouter.route('/').post(function(req, res){
+
+    try{
+        var application = req.body.removeAppData;
+
+        var file = fs.readFileSync( __dirname + "/" + "info.json", 'utf8');
+        var jsonFile = JSON.parse(file);
+        console.log(jsonFile);
+        console.log('LENGTH: '+Object.keys(jsonFile).length);
+        for (var applicationObj in jsonFile) {
+            var i = 0;
+            if (jsonFile.hasOwnProperty(applicationObj) && applicationObj == application) {
+                delete jsonFile[application];
+                var data = JSON.stringify(jsonFile, null, 4);
+
+                fs.writeFileSync(__dirname + '/info.json', data, 'utf-8');
+
+            }
+            i++;
+        }
+        // for (var i = 0; i < Object.keys(jsonFile).length; i++) {
+        //     console.log(jsonFile[i] + ' =|= ' + application);
+        //     if(jsonFile[i] == application){
+        //         jsonFile.splice(i,1);
+        //         var data = JSON.stringify(jsonFile, null, 4);
+        //         try {
+        //
+        //             fs.writeFileSync(__dirname + '/info.json', data, 'utf-8');
+        //
+        //         }
+        //         catch(err) {
+        //             console.log(err);
+        //         }
+        //
+        //         return res.redirect('/secure');
+        //     }
+        // }
+    }
+    catch(err){
+        console.log(err);
+        return res.redirect('/');
+    }
+    res.redirect('/');
+
+});
+
+generateTokenRouter.route('/').post(function(req, res){
+
+    var tokenSecret = crypto.randomBytes(64).toString('hex');
+
+    var infoJSON;
+
+    infoJSON = JSON.parse(fs.readFileSync(__dirname + '/info.json', 'utf8'));
+
+    infoJSON[req.body.application].tokenSecret = tokenSecret;
+
+    infoJSON = JSON.stringify(infoJSON, null, 4);
+
+    fs.writeFile(__dirname + '/../authentication/info.json', infoJSON, 'utf-8', function(err){
+
+        if (err)
+
+        return console.log(err);
+
+        res.redirect('/secure');
+
+    });
+
+});
+
+modifyRouter.route('/').post(function(req, res){
+try{
+    var old_username = JSON.parse(req.body.before_json).username,
+    old_permission = JSON.parse(req.body.before_json).permission,
+    new_username = req.body.username,
+    new_password = req.body.password;
+
+    var data_json = JSON.parse(fs.readFileSync( __dirname + "/" + "info.json", 'utf8'));
+    console.log(data_json.admin.users);
+    if (old_username != new_username && new_username) {
+        for (var user in data_json[old_permission].users) {
+            if (data_json[old_permission].users.hasOwnProperty(user) && customAuth.decrypt(data_json[old_permission].users[user].username) == old_username) {
+                data_json[old_permission].users[user].username = customAuth.encrypt(new_username);
+            }
+        }
+    }
+    if (new_password) {
+        for (var userp in data_json[old_permission].users) {
+            if (data_json[old_permission].users.hasOwnProperty(userp) && customAuth.decrypt(data_json[old_permission].users[userp].username) == old_username) {
+                data_json[old_permission].users[userp].password = bcrypt.hashSync(new_password, saltRounds);
+            }
+        }
+    }
+
+    var data = JSON.stringify(data_json, null, 4);
+    try {
+
+        fs.writeFileSync(__dirname + '/info.json', data, 'utf-8');
+    }
+    catch(err) {
+        console.log(err);
+    }
+
+    console.log('--------------------------------------------------------------------------------------------------------');
+    console.log(data_json.admin.users);
+
+    res.redirect('/');
+    }
+    catch(err){
+        console.log(err);
+        res.redirect('/');
+    }
+
+});
 
 
 app.use('/verify', verifyRouter);
@@ -483,14 +609,19 @@ app.use('/secure', secureRouter);
 
 app.use('/logout', logoutRouter);
 
-app.use('/token', tokenRouter);
-
 app.use('/secure/api', apiRouter);
 
 app.use('/secure/remove-user', removeUserRouter);
 
 app.use('/secure/add-user', addUserRouter);
 
+app.use('/secure/add-app', addAppRouter);
+
+app.use('/secure/remove-app', removeAppRouter);
+
+app.use('/secure/generate-token', generateTokenRouter);
+
+app.use('/secure/modify-user', modifyRouter);
 
 
 

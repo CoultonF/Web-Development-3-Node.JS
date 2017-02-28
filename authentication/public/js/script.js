@@ -1,9 +1,27 @@
 $(function(){
+    $('.menu-icon').click(function(){
+
+        $('.ui.sidebar').sidebar('toggle');
+
+    });
+
+    $('.ui.dropdown').dropdown();
+
+    $("input.modify-user").click(function() {
+        if(this.checked) {
+            console.log(this.value);
+            var obj = JSON.parse(this.value);
+            console.log(obj.username);
+            console.log(obj.permission);
+            $('input[name="username"].modify-user').val(obj.username);
+
+        }
+    });
 
     $('#add-app').click(function(){
 
         changeActive(this);
-        $('.remove-user').show();
+        $('.add-app').show();
         $('.ui.sidebar').sidebar('toggle');
 
     });
@@ -67,11 +85,7 @@ $(function(){
 
     }();
 
-    $('.menu-icon').click(function(){
 
-        $('.ui.sidebar').sidebar('toggle');
-
-    });
 
 
 });

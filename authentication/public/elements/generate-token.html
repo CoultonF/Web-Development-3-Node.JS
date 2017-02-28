@@ -25,7 +25,7 @@
                 <form class="ui form" method='post' action="/secure/generate-token">
 
                     <div>
-                        <select class="ui dropdown" name="permission" required>
+                        <select class="ui dropdown" name="application" required>
                             <option>Select App</option>
                             <template is="dom-repeat" items="{{appsData}}" as="value">
                                 <option value="{{value.application}}">{{value.application}}</option>
